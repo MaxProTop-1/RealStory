@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Real Story — Rooms</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-base: #080b11;
+    --bg-surface-1: #0f1521;
+    --bg-surface-2: #162030;
+    --bg-surface-3: #1f2d42;
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-accent: rgba(102, 192, 244, 0.28);
+    --accent-blue: #66c0f4;
+    --accent-blue-glow: rgba(102, 192, 244, 0.3);
+    --accent-gold: #f59e0b;
+    --accent-green: #4ade80;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-main);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+
+  /* ========================================================
+     ХЕДЕР (СТРОГО ПО ЛИСТКУ 5: Real Story  [rooms]  [profile-заштрихован])
+     ======================================================== */
+  header.app-header {
+    background: rgba(15, 21, 33, 0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-subtle);
+    height: 60px;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .brand-logo {
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    color: #fff;
+    cursor: pointer;
+    user-select: none;
+  }
+  .brand-logo span { color: var(--accent-blue); }
+
+  .header-tabs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Кнопка [rooms] */
+  .tab-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 7px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab-btn.active {
+    background: rgba(102, 192, 244, 0.12);
+    border-color: var(--border-accent);
+    color: var(--accent-blue);
+  }
+
+  /* Кнопка [profile] - на листке обведена и заштрихована косыми линиями */
+  .profile-hatched-btn {
+    position: relative;
+    padding: 7px 20px;
+    border-radius: 6px;
+    border: 1.5px solid #3b506b;
+    background: repeating-linear-gradient(
+      -45deg,
+      #131c2a,
+      #131c2a 4px,
+      #1e2c40 4px,
+      #1e2c40 8px
+    );
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.4);
+    transition: all 0.2s;
+  }
+  .profile-hatched-btn:hover {
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+  }
+  .profile-hatched-btn.active {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 15px var(--accent-blue-glow);
+  }
+
+  /* ========================================================
+     ОСНОВНОЙ КОНТЕЙНЕР
+     ======================================================== */
+  main.main-body {
+    flex: 1;
+    max-width: 980px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 24px 18px 60px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ПЕРЕКЛЮЧАТЕЛЬ [find] / [create] ПОД ШАПКОЙ */
+  .mode-switch-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+  .mode-btn {
+    background: var(--bg-surface-1);
+    border: 1.5px solid var(--border-subtle);
+    color: var(--text-secondary);
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .mode-btn:hover {
+    color: #fff;
+    background: var(--bg-surface-2);
+  }
+  .mode-btn.active {
+    border-color: var(--accent-blue);
+    background: rgba(102, 192, 244, 0.12);
+    color: #fff;
+    box-shadow: 0 0 16px rgba(102, 192, 244, 0.2);
+  }
+
+  /* ========================================================
+     РАЗДЕЛ FIND (СТРОГО ПО НОВОМУ РИСУНКУ)
+     Строка фильтров: created by / solo group / small/big / status / offline/online / all
+     Ниже карточки: Photo | Название (Godfather) | теги: soon / solo / big / offline | Кнопка [Play]
+     ======================================================== */
+  #viewFind {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* КОМПАКТНАЯ СТРОКА ХАРАКТЕРИСТИК НАД СПИСКОМ */
+  .find-filters-bar {
+    background: var(--bg-surface-1);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px;
+    align-items: center;
+  }
+
+  .filter-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .filter-cell label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+  }
+  .filter-select {
+    width: 100%;
+    background: var(--bg-surface-2);
+    border: 1px solid var(--border-subtle);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 6px 8px;
+    border-radius: 5px;
+    outline: none;
+    cursor: pointer;
+  }
+  .filter-select:focus {
+    border-color: var(--accent-blue);
+  }
+
+  /* СПИСОК КАРТОЧЕК */
+  .rooms-stream {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* КАРТОЧКА КОМНАТЫ СТРОГО ПО МАКЕТУ ЛИСТКА 5 */
+  .room-strip-card {
+    background: var(--bg-surface-1);
+    border: 1.5px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .room-strip-card:hover {
+    border-color: var(--border-accent);
+    background: #141c2b;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5), 0 0 16px var(--accent-blue-glow);
+  }
+
+  .room-strip-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
+    flex: 1;
+  }
+
+  /* [Photo] из наброска */
+  .photo-thumb {
+    width: 68px;
+    height: 68px;
+    border-radius: 8px;
+    background-size: cover;
+    background-position: center;
+    border: 1px solid rgba(255,255,255,0.1);
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  }
+
+  .room-strip-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .room-creator-hint {
+    font-size: 0.7rem;
+    color: var(--accent-blue);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Название (Godfather и т.д.) */
+  .room-title-name {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Теги в рамке: [soon] [solo] [big] [offline] точно как в прямоугольничках */
+  .room-tags-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .room-box-tag {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid #334760;
+    background: var(--bg-surface-2);
+    color: #cbd5e1;
+    text-transform: lowercase;
+  }
+  .room-box-tag.status-end {
+    border-color: rgba(74, 222, 128, 0.4);
+    color: #86efac;
+    background: rgba(74, 222, 128, 0.08);
+  }
+  .room-box-tag.status-prog {
+    border-color: rgba(245, 158, 11, 0.4);
+    color: #fde047;
+    background: rgba(245, 158, 11, 0.08);
+  }
+  .room-box-tag.status-soon {
+    border-color: rgba(148, 163, 184, 0.4);
+    color: #94a3b8;
+  }
+  .room-box-tag.tag-engine {
+    border-color: rgba(102, 192, 244, 0.4);
+    color: #66c0f4;
+  }
+
+  /* Кнопка [Play] по эскизу в рамке справа */
+  .btn-play-frame {
+    background: linear-gradient(180deg, #78b826 0%, #588a1b 100%);
+    color: #fff;
+    border: 2px solid #99e238;
+    border-radius: 10px;
+    padding: 14px 28px;
+    font-size: 1.15rem;
+    font-weight: 900;
+    letter-spacing: 0.8px;
+    cursor: pointer;
+    text-transform: capitalize;
+    box-shadow: 0 0 18px rgba(120, 184, 38, 0.35);
+    transition: all 0.15s ease-in-out;
+    flex-shrink: 0;
+  }
+  .btn-play-frame:hover {
+    background: linear-gradient(180deg, #8ed629 0%, #68a320 100%);
+    box-shadow: 0 0 26px rgba(120, 184, 38, 0.6);
+    transform: scale(1.04);
+  }
+
+  /* ========================================================
+     РАЗДЕЛ CREATE (СТРОГО ПО НИЖНЕЙ ЧАСТИ ЛИСТКА 5):
+     [Photo]
+     name
+     bio
+     характеристики -> если онлайн, то API
+     [upload]
+     ======================================================== */
+  #viewCreate {
+    display: none;
+    flex-direction: column;
+    gap: 16px;
+    background: var(--bg-surface-1);
+    border: 1.5px solid var(--border-subtle);
+    border-radius: 14px;
+    padding: 26px;
+  }
+
+  .create-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .create-field-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    font-weight: 800;
+    color: var(--text-secondary);
+    letter-spacing: 0.6px;
+  }
+
+  /* [Photo] */
+  .photo-upload-box {
+    border: 2px dashed rgba(102, 192, 244, 0.35);
+    background: rgba(102, 192, 244, 0.03);
+    border-radius: 10px;
+    padding: 28px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .photo-upload-box:hover {
+    border-color: var(--accent-blue);
+    background: rgba(102, 192, 244, 0.08);
+  }
+
+  .text-input-styled {
+    width: 100%;
+    background: var(--bg-surface-2);
+    border: 1px solid var(--border-subtle);
+    color: #fff;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    outline: none;
+  }
+  .text-input-styled:focus {
+    border-color: var(--accent-blue);
+  }
+
+  /* Блок "характеристики" */
+  .chars-section-box {
+    background: var(--bg-surface-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .chars-grid-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+  }
+
+  /* "если онлайн, то API" по стрелке на листке */
+  #onlineApiSubBlock {
+    display: none;
+    background: #111a28;
+    border: 1px solid var(--border-accent);
+    border-radius: 8px;
+    padding: 14px;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .api-tags-row {
+    display: flex;
+    gap: 8px;
+  }
+  .api-tag-btn {
+    background: var(--bg-surface-2);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    padding: 6px 14px;
+    border-radius: 5px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .api-tag-btn.active {
+    border-color: var(--accent-blue);
+    color: #fff;
+    background: var(--bg-surface-3);
+  }
+
+  /* Кнопка [upload] по наброску */
+  .btn-upload-submit {
+    background: var(--accent-blue);
+    color: #080d14;
+    border: none;
+    font-size: 1rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 0 20px var(--accent-blue-glow);
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+  .btn-upload-submit:hover {
+    background: #8ad2ff;
+    transform: scale(1.01);
+  }
+
+  /* ========================================================
+     ОТДЕЛЬНЫЙ ЭКРАН ИГРЫ (ОТКРЫВАЕТСЯ ПО КНОПКЕ PLAY)
+     ======================================================== */
+  #viewGameScreen {
+    display: none;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .game-top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-surface-1);
+    border: 1px solid var(--border-subtle);
+    padding: 10px 16px;
+    border-radius: 8px;
+  }
+  .btn-back-catalog {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-back-catalog:hover { color: #fff; }
+
+  .game-two-cols {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 16px;
+  }
+
+  .game-terminal {
+    background: var(--bg-surface-1);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 380px;
+  }
+  .terminal-story-text {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: #e2e8f0;
+    margin-bottom: 24px;
+  }
+  .choices-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 18px;
+  }
+  .btn-choice-variant {
+    background: var(--bg-surface-2);
+    border: 1px solid var(--border-subtle);
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: 0.2s;
+  }
+  .btn-choice-variant:hover {
+    background: var(--bg-surface-3);
+    border-color: var(--accent-blue);
+    transform: translateX(4px);
+  }
+  .choice-key-tag {
+    background: var(--bg-base);
+    color: var(--accent-blue);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 800;
+    font-size: 0.75rem;
+  }
+
+  .game-side-box {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .side-card-module {
+    background: var(--bg-surface-1);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .inv-mini-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .inv-slot-unit {
+    aspect-ratio: 1;
+    background: var(--bg-surface-2);
+    border: 1px dashed var(--border-subtle);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+  }
+  .inv-slot-unit.filled {
+    border-style: solid;
+    border-color: var(--border-accent);
+    background: #19273a;
+  }
+
+  .game-log-console {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 180px;
+    overflow-y: auto;
+    margin-top: 8px;
+  }
+  .log-line span.time { color: var(--text-muted); margin-right: 4px; }
+  .log-line span.ok { color: var(--accent-green); }
+
+  /* ========================================================
+     РАЗДЕЛ PROFILE (ПРОФИЛЬ MAX)
+     ======================================================== */
+  #viewProfile {
+    display: none;
+    flex-direction: column;
+    gap: 20px;
+    background: var(--bg-surface-1);
+    border: 1px solid var(--border-subtle);
+    border-radius: 14px;
+    padding: 26px;
+  }
+
+  /* МОБИЛЬНАЯ АДАПТАЦИЯ */
+  @media (max-width: 720px) {
+    .room-strip-card {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 14px;
+    }
+    .btn-play-frame {
+      width: 100%;
+      text-align: center;
+      padding: 12px;
+    }
+    .game-two-cols {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ========================================================
+       ХЕДЕР ПО РИСУНКУ: Real Story   [rooms]   [profile (штриховка)]
+       ======================================================== -->
+  <header class="app-header">
+    <div class="brand-logo" onclick="showRoomsSection('find')">
+      Real <span>Story</span>
+    </div>
+
+    <div class="header-tabs">
+      <button class="tab-btn active" id="headerRoomsBtn" onclick="showRoomsSection('find')">
+        rooms
+      </button>
+
+      <!-- Кнопка profile со штриховкой точно по чертежу -->
+      <button class="profile-hatched-btn" id="headerProfileBtn" onclick="showProfileSection()">
+        profile (Max)
+      </button>
+    </div>
+  </header>
+
+  <main class="main-body">
+
+    <!-- ПЕРЕКЛЮЧАТЕЛЬ [find] / [create] ПОД ШАПКОЙ -->
+    <div class="mode-switch-bar" id="subModeBar">
+      <button class="mode-btn active" id="btnFindMode" onclick="setFindOrCreate('find')">
+        🔍 find
+      </button>
+      <button class="mode-btn" id="btnCreateMode" onclick="setFindOrCreate('create')">
+        ➕ create
+      </button>
+    </div>
+
+    <!-- ========================================================
+         РАЗДЕЛ FIND: СТРОКА ХАРАКТЕРИСТИК И КАРТОЧКИ С КНОПКОЙ PLAY
+         ======================================================== -->
+    <section id="viewFind">
+
+      <!-- Строка характеристик поиска из чертежа:
+           created by / solo group / small/big / status / offline/online / all -->
+      <div class="find-filters-bar">
+        <!-- created by -->
+        <div class="filter-cell">
+          <label>created by</label>
+          <select class="filter-select" id="fCreator" onchange="filterRoomsList()">
+            <option value="all">all creators</option>
+            <option value="Max">Max (мой профиль)</option>
+            <option value="Corleone Archives">Corleone Archives</option>
+            <option value="Hogwarts Guild">Hogwarts Guild</option>
+            <option value="CDPR Fan">CDPR Fan</option>
+          </select>
+        </div>
+
+        <!-- solo / group -->
+        <div class="filter-cell">
+          <label>solo / group</label>
+          <select class="filter-select" id="fTeam" onchange="filterRoomsList()">
+            <option value="all">all</option>
+            <option value="solo">solo</option>
+            <option value="group">group</option>
+          </select>
+        </div>
+
+        <!-- small / big -->
+        <div class="filter-cell">
+          <label>small / big</label>
+          <select class="filter-select" id="fDevice" onchange="filterRoomsList()">
+            <option value="all">all</option>
+            <option value="small">small (1 device)</option>
+            <option value="big">big (party tv)</option>
+          </select>
+        </div>
+
+        <!-- status (in progress / end / soon) -->
+        <div class="filter-cell">
+          <label>status</label>
+          <select class="filter-select" id="fStatus" onchange="filterRoomsList()">
+            <option value="all">all</option>
+            <option value="soon">soon</option>
+            <option value="end">end</option>
+            <option value="in progress">in progress</option>
+          </select>
+        </div>
+
+        <!-- offline / online -->
+        <div class="filter-cell">
+          <label>offline / online</label>
+          <select class="filter-select" id="fEngine" onchange="filterRoomsList()">
+            <option value="all">all</option>
+            <option value="offline">offline</option>
+            <option value="online">online</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- СПИСОК КАРТОЧЕК (КАЖДАЯ ПО СХЕМЕ: Photo | Name | soon solo big offline | Play) -->
+      <div class="rooms-stream" id="roomsStreamBox">
+        <!-- Генерируется из JS -->
+      </div>
+
+    </section>
+
+    <!-- ========================================================
+         РАЗДЕЛ CREATE (СТРОГО ПО НИЖНЕЙ ЧАСТИ ЛИСТКА):
+         [Photo]
+         name
+         bio
+         характеристики -> если онлайн, то API
+         [upload]
+         ======================================================== -->
+    <section id="viewCreate">
+      <h2 style="font-size:1.2rem; color:#fff;">Создание новой комнаты (Create)</h2>
+
+      <!-- [Photo] -->
+      <div class="create-field-group">
+        <label class="create-field-label">[ Photo ] — Обложка / арт истории</label>
+        <div class="photo-upload-box" onclick="mockPickPhoto()">
+          <div style="font-size:2rem;">🖼️</div>
+          <div style="color:#fff; font-weight:700; margin-top:6px;" id="lblPhotoUpload">Нажмите для выбора Photo</div>
+        </div>
+      </div>
+
+      <!-- name -->
+      <div class="create-field-group">
+        <label class="create-field-label">name — Название сценария</label>
+        <input type="text" class="text-input-styled" id="newStoryNameInput" placeholder="Например: Godfather: Альтернативный выбор Дона">
+      </div>
+
+      <!-- bio -->
+      <div class="create-field-group">
+        <label class="create-field-label">bio — Синопсис / статья сюжета</label>
+        <textarea class="text-input-styled" id="newStoryBioInput" rows="3" placeholder="«Какой же дурак! Я бы на его месте...» Краткое био"></textarea>
+      </div>
+
+      <!-- характеристики -->
+      <div class="create-field-group">
+        <label class="create-field-label">характеристики</label>
+        <div class="chars-section-box">
+          <div class="chars-grid-form">
+            <div>
+              <label style="font-size:0.7rem; color:var(--text-muted); font-weight:bold;">1. CREATED BY</label>
+              <input type="text" class="text-input-styled" value="Max (текущий профиль)" disabled style="opacity:0.7;">
+            </div>
+            <div>
+              <label style="font-size:0.7rem; color:var(--text-muted); font-weight:bold;">2. SOLO / GROUP</label>
+              <select class="text-input-styled" id="newTeamSelect">
+                <option value="solo">solo</option>
+                <option value="group">group</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.7rem; color:var(--text-muted); font-weight:bold;">3. SMALL / BIG</label>
+              <select class="text-input-styled" id="newDeviceSelect">
+                <option value="small">small (1 устройство)</option>
+                <option value="big">big (ТВ + телефоны)</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.7rem; color:var(--text-muted); font-weight:bold;">4. STATUS</label>
+              <select class="text-input-styled" id="newStatusSelect">
+                <option value="soon">soon</option>
+                <option value="end">end</option>
+                <option value="in progress">in progress</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.7rem; color:var(--text-muted); font-weight:bold;">5. ENGINE</label>
+              <select class="text-input-styled" id="newEngineSelect" onchange="toggleApiBlock()">
+                <option value="offline">offline (скрипт)</option>
+                <option value="online">online (AI live)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- если онлайн, то API (по стрелке на листке) -->
+          <div id="onlineApiSubBlock">
+            <label style="font-size:0.75rem; text-transform:uppercase; color:var(--accent-blue); font-weight:800;">
+              если онлайн, то API
+            </label>
+            <div class="api-tags-row">
+              <button type="button" class="api-tag-btn active" id="btnGptApi" onclick="setApiChoice('ChatGPT')">ChatGPT</button>
+              <button type="button" class="api-tag-btn" id="btnClaudeApi" onclick="setApiChoice('Claude')">Claude</button>
+              <button type="button" class="api-tag-btn" id="btnOtherApi" onclick="setApiChoice('Other AI')">Other AI</button>
+            </div>
+            <input type="password" class="text-input-styled" placeholder="Вставьте ваш API Key (sk-...)" id="inputApiKey">
+          </div>
+        </div>
+      </div>
+
+      <!-- [upload] -->
+      <button class="btn-upload-submit" onclick="submitCreateRoom()">
+        [ upload ] — Опубликовать комнату
+      </button>
+    </section>
+
+    <!-- ========================================================
+         ОТДЕЛЬНЫЙ ЭКРАН ИГРЫ (ОТКРЫВАЕТСЯ ПО НАЖАТИЮ КНОПКИ PLAY)
+         ======================================================== -->
+    <section id="viewGameScreen">
+      <div class="game-top-bar">
+        <button class="btn-back-catalog" onclick="closeGameAndBack()">
+          ← Выйти в каталог комнат
+        </button>
+        <div style="font-size:0.85rem; font-weight:bold; color:var(--accent-blue);" id="gameHeaderRoomTitle">
+          Godfather
+        </div>
+      </div>
+
+      <div class="game-two-cols">
+        <!-- Текстовый терминал игры -->
+        <div class="game-terminal">
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--accent-gold); font-weight:bold; text-transform:uppercase; margin-bottom:14px;">
+              <span id="gameEpisodeLabel">Эпизод 1 · Ключевое решение</span>
+              <span>D20 Engine Ready</span>
+            </div>
+            <div class="terminal-story-text" id="gameStoryContent">
+              Текст загружается...
+            </div>
+          </div>
+
+          <div class="choices-stack" id="gameChoicesStack">
+            <!-- Кнопки развилок -->
+          </div>
+        </div>
+
+        <!-- Боковая панель инвентаря и лога -->
+        <div class="game-side-box">
+          <div class="side-card-module">
+            <div style="display:flex; justify-content:space-between; font-size:0.72rem; font-weight:800; text-transform:uppercase; color:var(--text-muted);">
+              <span>Инвентарь</span>
+              <span style="color:var(--accent-blue);">3/8</span>
+            </div>
+            <div class="inv-mini-grid" id="gameInvGrid">
+              <!-- Слоты -->
+            </div>
+          </div>
+
+          <div class="side-card-module" style="flex:1;">
+            <div style="font-size:0.72rem; font-weight:800; text-transform:uppercase; color:var(--accent-green);">
+              ● Журнал решений (Live)
+            </div>
+            <div class="game-log-console" id="gameLiveLog">
+              <div class="log-line"><span class="time">00:01</span> Сессия начата успешно.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         РАЗДЕЛ PROFILE (ПРОФИЛЬ MAX)
+         ======================================================== -->
+    <section id="viewProfile">
+      <div style="display:flex; align-items:center; gap:16px;">
+        <div style="width:58px; height:58px; border-radius:50%; background:linear-gradient(135deg, #2563eb, #1e3a8a); display:flex; align-items:center; justify-content:center; font-size:1.5rem; font-weight:bold; color:#fff; border:2px solid var(--accent-blue);">
+          M
+        </div>
+        <div>
+          <h2 style="color:#fff; font-size:1.4rem;">Max</h2>
+          <div style="color:var(--text-muted); font-size:0.8rem;">Профиль создателя сценариев · Real Story Hub</div>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid var(--border-subtle); padding-top:16px;">
+        <h3 style="color:#fff; font-size:1rem; margin-bottom:12px;">Комнаты, созданные мной (Max):</h3>
+        <div id="profileMyRoomsList" style="display:flex; flex-direction:column; gap:10px;">
+          <!-- Карточки автора Max -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // ========================================================
+    // БАЗА ДАННЫХ ИЗ 12 ИСТОРИЙ
+    // Пример Godfather взят ровно как на вашем наброске:
+    // Godfather: soon / solo / big / offline
+    // ========================================================
+    const storiesDB = [
+      {
+        id: 1,
+        name: "Godfather: Если бы Дон принял сделку",
+        shortName: "Godfather",
+        creator: "Max",
+        status: "soon",      // ровно как на листке
+        team: "solo",        // ровно как на листке
+        device: "big",       // ровно как на листке
+        engine: "offline",   // ровно как на листке
+        photo: "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=400&q=80",
+        bio: "«Какой же дурак! Если бы Вито сразу просчитал ход Таттальи и Барзини, покушения у лавки никогда бы не случилось!»",
+        inv: ["🚬", "💼", "🍸"],
+        episode: {
+          title: "Кабинет Дона Корлеоне",
+          text: "Солоццо по кличке 'Турок' ждет ответа. Он предлагает миллион долларов в наркотрафик в обмен на покровительство сенаторов. Сонни нервно подается вперед.<br><br><b>Ваш альтернативный ход:</b>",
+          choices: [
+            { text: "Принять сделку, но тайно внедрить боевиков Луки Брази в охрану Солоццо", dice: "d20: 19", log: "Трафик под контролем Корлеоне. Война предотвращена!" },
+            { text: "Отказать и немедленно отдать приказ нанести упреждающий удар", dice: "d20: 16", log: "Превентивная операция! Пять Семей деморализованы." }
+          ]
+        }
+      },
+      {
+        id: 2,
+        name: "Harry Potter: Рукопожатие с Драко Малфоем",
+        shortName: "Harry Potter",
+        creator: "Hogwarts Guild",
+        status: "end",
+        team: "solo",
+        device: "small",
+        engine: "offline",
+        photo: "https://images.unsplash.com/photo-1551269901-5c5e14c25df7?w=400&q=80",
+        bio: "«Какой же дурак! Если бы Гарри выбрал Слизерин, он возглавил бы чистокровных и победил Волан-де-Морта изнутри...»",
+        inv: ["🪄", "🧥", "🪙"],
+        episode: {
+          title: "Коридор у Большого Зала",
+          text: "Драко Малфой высокомерно протягивает ладонь: <i>«Ты скоро поймешь, Поттер, что некоторые семьи куда лучше прочих. Я помогу тебе.»</i><br><br><b>Ваш выбор:</b>",
+          choices: [
+            { text: "Пожать руку Драко: «Покажи мне силу Слизерина»", dice: "d20: 18", log: "Гарри распределен на Слизерин! Новый политический баланс." },
+            { text: "Взять за руку и Рона, и Драко: «Я объединю оба ваших дома»", dice: "d20: 20", log: "Критический успех дипломатии." }
+          ]
+        }
+      },
+      {
+        id: 3,
+        name: "Witcher: Развилка в корчме «Белый Сад»",
+        shortName: "Witcher",
+        creator: "CDPR Fan",
+        status: "end",
+        team: "solo",
+        device: "small",
+        engine: "offline",
+        photo: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&q=80",
+        bio: "«Я бы никогда не лез в резню с дезертирами, подставляя трактирщицу...»",
+        inv: ["🗡️", "🧪", "💰"],
+        episode: {
+          title: "Корчма Белого Сада",
+          text: "Дезертиры выхватывают тесаки и перегораживают вам выход.",
+          choices: [
+            { text: "Сложить пальцы в Знак Аксий и приказать им выйти вон", dice: "d20: 17", log: "Аксий подчинил разбойников. Кровопролития не произошло." }
+          ]
+        }
+      },
+      {
+        id: 4,
+        name: "Cyberpunk: Спасение Джеки Уэллса",
+        shortName: "Cyberpunk 2077",
+        creator: "Max",
+        status: "end",
+        team: "solo",
+        device: "small",
+        engine: "offline",
+        photo: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&q=80",
+        bio: "«Надо было сразу вызывать боевую Травму-Тим на крышу Компеки-Плаза!»",
+        inv: ["🔫", "💾", "💉"],
+        episode: {
+          title: "Лифт Компеки-Плаза",
+          text: "Джеки теряет сознание. Сирены воют на всех этажах.",
+          choices: [
+            { text: "Ввести MaxDoc и перенаправить Деламана к Виктору", dice: "d20: 19", log: "Пульс стабилизирован! Джеки доставлен живым." }
+          ]
+        }
+      },
+      {
+        id: 5,
+        name: "D&D: Ограбление храма Тиамат (Party Live)",
+        shortName: "D&D Tiamat",
+        creator: "Max",
+        status: "in progress",
+        team: "group",
+        device: "big",
+        engine: "online",
+        photo: "https://images.unsplash.com/photo-1563089145-599997674d42?w=400&q=80",
+        bio: "«Телевизор транслирует логово дракона, а каждый игрок на смартфоне делает тайный выбор...»",
+        inv: ["🏹", "🛡️", "📜"],
+        episode: {
+          title: "Врата сокровищницы",
+          text: "Пятиглавая королева драконов дремлет на горе рубинов.",
+          choices: [
+            { text: "Плут крадется в тенях за артефактом", dice: "d20: 18", log: "Артефакт украден бесшумно!" }
+          ]
+        }
+      },
+      {
+        id: 6,
+        name: "Lord of Rings: Если бы Боромир устоял",
+        shortName: "Boromir Choice",
+        creator: "Tolkien Guild",
+        status: "soon",
+        team: "solo",
+        device: "small",
+        engine: "offline",
+        photo: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400&q=80",
+        bio: "«Если бы Боромир не поддался шёпоту Кольца у Амон Хен...»",
+        inv: ["📯", "🗡️", "🛡️"],
+        episode: {
+          title: "Берег Амон Хен",
+          text: "Кольцо искушает величием Белого Города. Что ответит Боромир?",
+          choices: [
+            { text: "Опустить меч и поклясться защищать Хранителя", dice: "d20: 20", log: "Искушение сокрушено! Братство едино." }
+          ]
+        }
+      },
+      {
+        id: 7,
+        name: "Star Wars: Энакин не предает Винду",
+        shortName: "Star Wars ROTS",
+        creator: "Jedi Archives",
+        status: "end",
+        team: "solo",
+        device: "small",
+        engine: "offline",
+        photo: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=400&q=80",
+        bio: "«Надо было дать Винду закончить дуэль с Палпатином и спасти Республику!»",
+        inv: ["⚡", "⚔️", "🪐"],
+        episode: {
+          title: "Кабинет Палпатина",
+          text: "Винду держит клинок у горла ситха. Энакин делает выбор.",
+          choices: [
+            { text: "Обезоружить Палпатина вместе с магистром Винду", dice: "d20: 19", log: "Ситх пленен. Республика спасена от тирании." }
+          ]
+        }
+      },
+      {
+        id: 8,
+        name: "Fight Club: Осознание до взрывов",
+        shortName: "Fight Club",
+        creator: "Max",
+        status: "end",
+        team: "solo",
+        device: "small",
+        engine: "offline",
+        photo: "https://images.unsplash.com/photo-1514565131-fce0801e5785?w=400&q=80",
+        bio: "«Я бы понял суть Тайлера в мотеле Небраски, не доводя проект Разгром до катастрофы...»",
+        inv: ["🧼", "🚬", "📞"],
+        episode: {
+          title: "Комната мотеля",
+          text: "Тайлер Дёрден сидит на кровати и улыбается.",
+          choices: [
+            { text: "Принять обе сущности и отменить подрыв центров", dice: "d20: 18", log: "Разум стабилизирован." }
+          ]
+        }
+      },
+      {
+        id: 9,
+        name: "Game of Thrones: План Неда и Ренли",
+        shortName: "Game of Thrones",
+        creator: "Corleone Archives",
+        status: "end",
+        team: "group",
+        device: "big",
+        engine: "offline",
+        photo: "https://images.unsplash.com/photo-1533158326339-7f3cf2404354?w=400&q=80",
+        bio: "«Если бы Нед взял гвардейцев Ренли ночью, Ланнистеры были бы арестованы без войны!»",
+        inv: ["🐺", "📜", "🗡️"],
+        episode: {
+          title: "Покои Десницы",
+          text: "Ренли предлагает сотню мечей до рассвета.",
+          choices: [
+            { text: "Согласиться и направить гвардию Севера на арест Серсеи", dice: "d20: 17", log: "Переворот успешен, Нед Старк — регент." }
+          ]
+        }
+      },
+      {
+        id: 10,
+        name: "Breaking Bad: Уолтер берет деньги",
+        shortName: "Breaking Bad",
+        creator: "Max",
+        status: "end",
+        team: "solo",
+        device: "small",
+        engine: "offline",
+        photo: "https://images.unsplash.com/photo-1527661591475-527312dd65f5?w=400&q=80",
+        bio: "«Если бы Уолтер переступил через гордость и взял оплату лечения от Эллиота...»",
+        inv: ["👓", "🧪", "💵"],
+        episode: {
+          title: "Вечеринка на вилле",
+          text: "Эллиот предлагает вернуть долю в компании и оплатить все счета.",
+          choices: [
+            { text: "Принять помощь и вернуться к честным исследованиям", dice: "d20: 19", log: "Гейзенберг не родился." }
+          ]
+        }
+      },
+      {
+        id: 11,
+        name: "Matrix: Нео выбирает синюю капсулу",
+        shortName: "The Matrix",
+        creator: "Hogwarts Guild",
+        status: "soon",
+        team: "solo",
+        device: "small",
+        engine: "offline",
+        photo: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=80",
+        bio: "«Что если бы Избранный выбрал сон, но код Матрицы все равно начал ломаться вокруг него?»",
+        inv: ["💊", "🕶️", "💻"],
+        episode: {
+          title: "Кресло Морфеуса",
+          text: "Две ладони перед Нео. Красная или синяя?",
+          choices: [
+            { text: "Проглотить синюю капсулу и проснуться дома", dice: "d20: 15", log: "Нео проснулся, но код на экранах уже плывет..." }
+          ]
+        }
+      },
+      {
+        id: 12,
+        name: "Interstellar: Курс на планету Эдмундса",
+        shortName: "Interstellar",
+        creator: "Max",
+        status: "in progress",
+        team: "group",
+        device: "big",
+        engine: "online",
+        photo: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&q=80",
+        bio: "«Надо было сразу слушать Амелию и не тратить десятилетия на планету Миллер!»",
+        inv: ["🚀", "⌚", "🪐"],
+        episode: {
+          title: "Мостик Endurance",
+          text: "Экипаж решает, куда потратить последние остатки топлива.",
+          choices: [
+            { text: "Взять прямой курс на планету Эдмундса", dice: "d20: 20", log: "Колония основана без потерь времени!" }
+          ]
+        }
+      }
+    ];
+
+    let currentRoomForGame = storiesDB[0];
+    let selectedApiVendor = 'ChatGPT';
+
+    // ========================================================
+    // НАВИГАЦИЯ ХЕДЕРА: [rooms] <-> [profile]
+    // ========================================================
+    function showRoomsSection(subTab) {
+      document.getElementById('headerRoomsBtn').classList.add('active');
+      document.getElementById('headerProfileBtn').classList.remove('active');
+      document.getElementById('subModeBar').style.display = 'flex';
+      document.getElementById('viewProfile').style.display = 'none';
+      document.getElementById('viewGameScreen').style.display = 'none';
+      setFindOrCreate(subTab || 'find');
+    }
+
+    function showProfileSection() {
+      document.getElementById('headerRoomsBtn').classList.remove('active');
+      document.getElementById('headerProfileBtn').classList.add('active');
+      document.getElementById('subModeBar').style.display = 'none';
+      document.getElementById('viewFind').style.display = 'none';
+      document.getElementById('viewCreate').style.display = 'none';
+      document.getElementById('viewGameScreen').style.display = 'none';
+      document.getElementById('viewProfile').style.display = 'flex';
+      renderProfileRooms();
+    }
+
+    // ========================================================
+    // ПЕРЕКЛЮЧАТЕЛЬ [find] <-> [create]
+    // ========================================================
+    function setFindOrCreate(mode) {
+      const isFind = (mode === 'find');
+      document.getElementById('btnFindMode').classList.toggle('active', isFind);
+      document.getElementById('btnCreateMode').classList.toggle('active', !isFind);
+      document.getElementById('viewFind').style.display = isFind ? 'flex' : 'none';
+      document.getElementById('viewCreate').style.display = isFind ? 'none' : 'flex';
+      document.getElementById('viewGameScreen').style.display = 'none';
+      document.getElementById('viewProfile').style.display = 'none';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ========================================================
+    // РЕНДЕР КАРТОЧЕК В РАЗДЕЛЕ FIND (СТРОГО ПО ЛИСТКУ 5)
+    // [Photo] [Name] [soon/end] [solo/group] [small/big] [offline/online] -> [Play]
+    // ========================================================
+    function renderRoomsList() {
+      const container = document.getElementById('roomsStreamBox');
+      container.innerHTML = '';
+
+      const creator = document.getElementById('fCreator').value;
+      const team = document.getElementById('fTeam').value;
+      const device = document.getElementById('fDevice').value;
+      const status = document.getElementById('fStatus').value;
+      const engine = document.getElementById('fEngine').value;
+
+      const filtered = storiesDB.filter(r => {
+        const mCreator = (creator === 'all') || (r.creator === creator);
+        const mTeam = (team === 'all') || (r.team === team);
+        const mDevice = (device === 'all') || (r.device === device);
+        const mStatus = (status === 'all') || (r.status === status);
+        const mEngine = (engine === 'all') || (r.engine === engine);
+        return mCreator && mTeam && mDevice && mStatus && mEngine;
+      });
+
+      filtered.forEach(room => {
+        const card = document.createElement('div');
+        card.className = 'room-strip-card';
+
+        let statusClass = room.status === 'end' ? 'status-end' : (room.status === 'in progress' ? 'status-prog' : 'status-soon');
+
+        card.innerHTML = `
+          <div class="room-strip-left">
+            <!-- [Photo] из наброска -->
+            <div class="photo-thumb" style="background-image: url('${room.photo}');"></div>
+
+            <div class="room-strip-info">
+              <div class="room-creator-hint">By ${room.creator}</div>
+              <!-- Name: Godfather / Harry Potter / etc -->
+              <div class="room-title-name">${room.name}</div>
+
+              <!-- Рамки характеристик точно по наброску: [soon] [solo] [big] [offline] -->
+              <div class="room-tags-row">
+                <span class="room-box-tag ${statusClass}">[${room.status}]</span>
+                <span class="room-box-tag">[${room.team}]</span>
+                <span class="room-box-tag">[${room.device}]</span>
+                <span class="room-box-tag tag-engine">[${room.engine}]</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Большая кнопка [Play] в рамке справа по наброску -->
+          <button class="btn-play-frame" onclick="playRoomDirect(${room.id})">
+            Play
+          </button>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    function filterRoomsList() { renderRoomsList(); }
+
+    // ========================================================
+    // ЗАПУСК ИГРЫ ПО КНОПКЕ [PLAY]
+    // ========================================================
+    function playRoomDirect(roomId) {
+      currentRoomForGame = storiesDB.find(r => r.id === roomId) || storiesDB[0];
+
+      document.getElementById('viewFind').style.display = 'none';
+      document.getElementById('viewCreate').style.display = 'none';
+      document.getElementById('viewProfile').style.display = 'none';
+      document.getElementById('subModeBar').style.display = 'none';
+      document.getElementById('viewGameScreen').style.display = 'flex';
+
+      // Наполняем терминал
+      document.getElementById('gameHeaderRoomTitle').innerText = currentRoomForGame.name;
+      document.getElementById('gameEpisodeLabel').innerText = `Эпизод · ${currentRoomForGame.episode.title}`;
+      document.getElementById('gameStoryContent').innerHTML = currentRoomForGame.episode.text;
+
+      // Наполняем инвентарь
+      const invGrid = document.getElementById('gameInvGrid');
+      invGrid.innerHTML = '';
+      currentRoomForGame.inv.forEach(item => {
+        const slot = document.createElement('div');
+        slot.className = 'inv-slot-unit filled';
+        slot.innerText = item;
+        invGrid.appendChild(slot);
+      });
+      for (let i = currentRoomForGame.inv.length; i < 4; i++) {
+        const slot = document.createElement('div');
+        slot.className = 'inv-slot-unit';
+        invGrid.appendChild(slot);
+      }
+
+      // Кнопки развилок
+      const choicesStack = document.getElementById('gameChoicesStack');
+      choicesStack.innerHTML = '';
+      const letters = ['A', 'B', 'C'];
+      currentRoomForGame.episode.choices.forEach((ch, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-choice-variant';
+        btn.onclick = () => makeGameDecision(ch);
+        btn.innerHTML = `
+          <span class="choice-key-tag">${letters[idx]}</span>
+          <span>${ch.text}</span>
+        `;
+        choicesStack.appendChild(btn);
+      });
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function makeGameDecision(choice) {
+      const logBox = document.getElementById('gameLiveLog');
+      const time = new Date().toLocaleTimeString([], {minute: '2-digit', second: '2-digit'});
+      const line = document.createElement('div');
+      line.className = 'log-line';
+      line.innerHTML = `<span class="time">${time}</span> [${choice.dice}] <span class="ok">${choice.log}</span>`;
+      logBox.prepend(line);
+
+      document.getElementById('gameStoryContent').innerHTML = `
+        <div style="color:#4ade80; font-weight:bold; margin-bottom:10px;">✓ Выбор совершен: ${choice.text}</div>
+        <i>Итог:</i> ${choice.log}<br><br>
+        Сюжетная ветка развернута по вашему решению!
+      `;
+    }
+
+    function closeGameAndBack() {
+      document.getElementById('viewGameScreen').style.display = 'none';
+      document.getElementById('subModeBar').style.display = 'flex';
+      setFindOrCreate('find');
+    }
+
+    // ========================================================
+    // СОЗДАНИЕ КОМНАТЫ (РАЗДЕЛ CREATE СТРОГО ПО ЛИСТКУ):
+    // [Photo]
+    // name
+    // bio
+    // характеристики -> если онлайн, то API
+    // [upload]
+    // ========================================================
+    function mockPickPhoto() {
+      document.getElementById('lblPhotoUpload').innerText = "✓ Photo 'Cover_Godfather.jpg' прикреплено";
+      document.getElementById('lblPhotoUpload').style.color = "#4ade80";
+    }
+
+    function toggleApiBlock() {
+      const eng = document.getElementById('newEngineSelect').value;
+      document.getElementById('onlineApiSubBlock').style.display = (eng === 'online') ? 'flex' : 'none';
+    }
+
+    function setApiChoice(vendor) {
+      selectedApiVendor = vendor;
+      document.getElementById('btnGptApi').classList.toggle('active', vendor === 'ChatGPT');
+      document.getElementById('btnClaudeApi').classList.toggle('active', vendor === 'Claude');
+      document.getElementById('btnOtherApi').classList.toggle('active', vendor === 'Other AI');
+    }
+
+    function submitCreateRoom() {
+      const name = document.getElementById('newStoryNameInput').value;
+      if (!name) {
+        alert("Пожалуйста, укажите 'name' истории!");
+        return;
+      }
+      const bio = document.getElementById('newStoryBioInput').value || "Альтернативный сюжет.";
+      const team = document.getElementById('newTeamSelect').value;
+      const device = document.getElementById('newDeviceSelect').value;
+      const status = document.getElementById('newStatusSelect').value;
+      const engine = document.getElementById('newEngineSelect').value;
+
+      const newEntry = {
+        id: storiesDB.length + 1,
+        name: name,
+        shortName: name.split(':')[0],
+        creator: "Max", // created by profile
+        status: status,
+        team: team,
+        device: device,
+        engine: engine,
+        photo: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&q=80",
+        bio: bio,
+        inv: ["📜", "🔑", "⚡"],
+        episode: {
+          title: "Пролог",
+          text: bio,
+          choices: [
+            { text: "Сделать первый ключевой выбор", dice: "d20: 18", log: "Глава 1 начата!" }
+          ]
+        }
+      };
+
+      storiesDB.unshift(newEntry);
+      renderRoomsList();
+      alert(`Комната «${name}» успешно создана через [upload]!`);
+      setFindOrCreate('find');
+    }
+
+    // ========================================================
+    // РЕНДЕР ПРОФИЛЯ MAX
+    // ========================================================
+    function renderProfileRooms() {
+      const box = document.getElementById('profileMyRoomsList');
+      box.innerHTML = '';
+      const myRooms = storiesDB.filter(r => r.creator === 'Max');
+
+      myRooms.forEach(r => {
+        const row = document.createElement('div');
+        row.style.background = 'var(--bg-surface-2)';
+        row.style.padding = '12px 16px';
+        row.style.borderRadius = '8px';
+        row.style.display = 'flex';
+        row.style.justifyContent = 'space-between';
+        row.style.alignItems = 'center';
+        row.innerHTML = `
+          <div>
+            <div style="font-weight:bold; color:#fff;">${r.name}</div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">[${r.status}] [${r.team}] [${r.device}] [${r.engine}]</div>
+          </div>
+          <button class="btn-play-frame" style="padding:6px 16px; font-size:0.85rem;" onclick="playRoomDirect(${r.id})">Play</button>
+        `;
+        box.appendChild(row);
+      });
+    }
+
+    // Старт
+    renderRoomsList();
+  </script>
+</body>
+</html>
